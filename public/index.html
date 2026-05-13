@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AthleticConnect | Full Suite</title>
+    <meta name="description" content="AthleticConnect — Your AI-powered fitness companion. Track workouts, join challenges, and get personalized coaching." />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css" />
+</head>
+
+<body>
+
+    <!-- ═══ AUTH OVERLAY ═══════════════════════════════════════ -->
+    <div class="auth-overlay" id="auth-overlay">
+        <div class="auth-card" id="auth-card" data-mode="login">
+            <div class="logo">ATHLETIC<span>CONNECT</span></div>
+            <p class="auth-subtitle" id="auth-subtitle">Sign in to your AthleticConnect account</p>
+
+            <form class="auth-form" id="auth-form">
+                <div id="register-fields" style="display: none; flex-direction: column; gap: 14px;">
+                    <label for="auth-name">Full Name</label>
+                    <input type="text" class="auth-input" id="auth-name" placeholder="e.g. Mohan K." />
+
+                    <label for="auth-location">Location</label>
+                    <input type="text" class="auth-input" id="auth-location" placeholder="e.g. Bengaluru, India" />
+                </div>
+
+                <label for="auth-email">Email</label>
+                <input type="email" class="auth-input" id="auth-email" placeholder="you@example.com" required />
+
+                <label for="auth-password">Password</label>
+                <input type="password" class="auth-input" id="auth-password" placeholder="••••••••" required />
+
+                <div class="auth-error" id="auth-error"></div>
+
+                <button type="submit" class="btn-primary" id="auth-submit-btn">Sign In</button>
+            </form>
+
+            <p class="auth-toggle" id="auth-toggle-text">
+                Don't have an account? <a onclick="toggleAuthMode()">Create one</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- ═══ APP SHELL ══════════════════════════════════════════ -->
+    <div id="app-shell" style="display: none; flex-direction: column; min-height: 100vh;">
+
+        <header class="header">
+            <div class="logo" onclick="showSection('dashboard')">ATHLETIC<span>CONNECT</span></div>
+            <div class="header-user">
+                <span class="header-user-name" id="header-name"></span>
+                <div class="avatar-sm" id="header-initials" onclick="showSection('profile')">U</div>
+            </div>
+        </header>
+
+        <div class="layout">
+            <aside class="sidebar">
+                <div class="sidebar-label">Main</div>
+                <div class="sidebar-item active" id="side-dashboard" onclick="showSection('dashboard')">📊
+                    Dashboard</div>
+                <div class="sidebar-item" id="side-ai" onclick="showSection('ai')">🤖 AI Coach</div>
+                <div class="sidebar-item" id="side-challenges" onclick="showSection('challenges')">🏆 Challenges
+                </div>
+                <div class="sidebar-item" id="side-social" onclick="showSection('social')">👥 Community</div>
+
+                <div class="sidebar-label">User</div>
+                <div class="sidebar-item" id="side-profile" onclick="showSection('profile')">👤 Profile</div>
+                <div class="sidebar-item" id="side-settings" onclick="showSection('settings')">⚙️ Settings</div>
+            </aside>
+
+            <main class="main">
+
+                <!-- ── DASHBOARD ──────────────────────────────── -->
+                <section class="section active" id="dashboard">
+                    <div class="page-title">DASHBOARD</div>
+                    <div class="page-sub" id="dashboard-greeting">Welcome back — here's your activity overview</div>
+
+                    <div class="stats-row">
+                        <div class="stat-card">
+                            <div class="stat-label">🔥 Calories</div>
+                            <div class="stat-value" id="stat-calories">—</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">🏃 Minutes</div>
+                            <div class="stat-value" id="stat-minutes">—</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">⭐ Points</div>
+                            <div class="stat-value" id="stat-points">—</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">🤝 Friends</div>
+                            <div class="stat-value" id="stat-friends">—</div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <h3 style="margin-bottom:15px">Recent Activity</h3>
+                        <div id="recent-activities">
+                            <p style="color: var(--text-dim)">Loading activities...</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ── AI COACH ───────────────────────────────── -->
+                <section class="section" id="ai">
+                    <div class="page-title">AI COACH</div>
+                    <div class="page-sub">Get personalized training advice powered by AI</div>
+
+                    <div class="ai-layout">
+                        <div class="chat-window">
+                            <div class="chat-msgs" id="chat-msgs">
+                                <div class="bubble ai">👋 Hello! I'm your AI-powered fitness coach. Ask me
+                                    about training plans, nutrition, recovery, injury prevention, or anything
+                                    fitness-related. I have access to your profile and recent activity data!</div>
+                            </div>
+                            <div class="chat-input-area">
+                                <input type="text" class="chat-field" id="chat-field"
+                                    placeholder="Ask your AI coach..." onkeydown="if(event.key==='Enter') sendMsg()">
+                                <button class="btn-primary" id="send-btn" onclick="sendMsg()">Send</button>
+                            </div>
+                        </div>
+                        <div class="panel">
+                            <h4 style="margin-bottom:15px; font-size: 13px; color: var(--primary)">COACH NOTES</h4>
+                            <ul style="font-size: 13px; color: var(--text-dim); list-style: none;">
+                                <li style="margin-bottom: 10px;">✅ Recovery looks good</li>
+                                <li style="margin-bottom: 10px;">🏃 Tempo run suggested</li>
+                                <li style="margin-bottom: 10px;">💧 Increase water intake</li>
+                            </ul>
+                            <hr style="border-color: var(--border); margin: 15px 0;">
+                            <h4 style="margin-bottom:10px; font-size: 13px; color: var(--primary)">TRY ASKING</h4>
+                            <ul style="font-size: 12px; color: var(--text-dim); list-style: none;">
+                                <li style="margin-bottom: 8px; cursor: pointer;"
+                                    onclick="quickAsk('Create a 5K training plan for me')">
+                                    💬 "Create a 5K training plan"
+                                </li>
+                                <li style="margin-bottom: 8px; cursor: pointer;"
+                                    onclick="quickAsk('How can I improve my 5K time?')">
+                                    💬 "How to improve my 5K time?"
+                                </li>
+                                <li style="cursor: pointer;"
+                                    onclick="quickAsk('What should I eat before a long run?')">
+                                    💬 "Pre-run nutrition tips"
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ── CHALLENGES ─────────────────────────────── -->
+                <section class="section" id="challenges">
+                    <div class="page-title">ACTIVE CHALLENGES</div>
+                    <div class="page-sub">Join global and local competitions</div>
+                    <div class="panel">
+                        <div id="challenges-list">
+                            <p style="color: var(--text-dim)">Loading challenges...</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ── COMMUNITY ──────────────────────────────── -->
+                <section class="section" id="social">
+                    <div class="page-title">COMMUNITY</div>
+                    <div class="page-sub">Connect with athletes and share your journey</div>
+
+                    <div class="panel">
+                        <div class="post-form">
+                            <input type="text" id="post-input" placeholder="Share an update with the community..."
+                                onkeydown="if(event.key==='Enter') submitPost()">
+                            <button class="btn-primary" onclick="submitPost()">Post</button>
+                        </div>
+                        <div id="community-feed">
+                            <p style="color: var(--text-dim)">Loading community feed...</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ── PROFILE ────────────────────────────────── -->
+                <section class="section" id="profile">
+                    <div class="page-title">MY PROFILE</div>
+                    <div class="panel" style="text-align:center">
+                        <div id="profile-initials"
+                            style="width: 80px; height: 80px; background: var(--primary); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 800; margin: 0 auto 15px;">
+                            —</div>
+                        <h2 id="profile-name">Loading...</h2>
+                        <p style="color: var(--primary)" id="profile-info"></p>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="panel">
+                            <h4 style="margin-bottom:15px; color: var(--text-dim)">Personal Bests</h4>
+                            <div id="profile-pbs">
+                                <p style="color: var(--text-dim)">Loading...</p>
+                            </div>
+                        </div>
+                        <div class="panel">
+                            <h4 style="margin-bottom:15px; color: var(--text-dim)">Achievements</h4>
+                            <div id="profile-achievements" style="display: flex; gap: 15px; flex-wrap: wrap;">
+                                <p style="color: var(--text-dim)">Loading...</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ── SETTINGS ───────────────────────────────── -->
+                <section class="section" id="settings">
+                    <div class="page-title">SETTINGS</div>
+                    <div class="page-sub">Manage your app preferences</div>
+
+                    <div class="panel">
+                        <h4 style="margin-bottom: 5px;">🤖 AI Coach Status</h4>
+                        <p style="color: var(--text-dim); font-size: 13px; margin-bottom: 10px;">
+                            AI coaching is powered by Google Gemini. The API key is securely managed on the server.
+                        </p>
+                        <div
+                            style="padding: 12px; background: var(--glass); border-radius: 10px; font-size: 13px; color: var(--text-dim);">
+                            ✅ AI Coach is configured server-side. No client-side setup needed!
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="item-row">
+                            <div>
+                                <strong>Dark Mode</strong><br>
+                                <small style="color: var(--text-muted)">Switch between light and dark themes</small>
+                            </div>
+                            <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+                        </div>
+                        <div class="item-row">
+                            <div>
+                                <strong>Push Notifications</strong><br>
+                                <small style="color: var(--text-muted)">Get alerts for challenges and messages</small>
+                            </div>
+                            <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+                        </div>
+                        <div class="item-row">
+                            <div>
+                                <strong>Privacy Mode</strong><br>
+                                <small style="color: var(--text-muted)">Hide profile from public leaderboard</small>
+                            </div>
+                            <label class="toggle"><input type="checkbox"><span class="slider"></span></label>
+                        </div>
+                    </div>
+                    <button class="btn-outline" style="border-color: #ff4444; color: #ff4444;" onclick="logout()">
+                        Logout
+                    </button>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="/app.js"></script>
+
+</body>
+
+</html>

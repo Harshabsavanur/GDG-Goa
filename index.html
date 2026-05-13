@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AthleticConnect | Full Suite</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet" />
+
+    <style>
+        /* ── Theme Variables ──────────────────────────────────────── */
+        :root {
+            --primary: #ccff00;
+            --primary-soft: rgba(204, 255, 0, 0.1);
+            --bg-main: #0a0b10;
+            --bg-card: #16181d;
+            --bg-nav: rgba(22, 24, 29, 0.95);
+            --text-main: #ffffff;
+            --text-dim: #94a3b8;
+            --text-muted: #64748b;
+            --border: rgba(255, 255, 255, 0.08);
+            --glass: rgba(255, 255, 255, 0.03);
+            --radius: 16px;
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-display: 'Barlow Condensed', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        /* ── Reset ────────────────────────────────────────────────── */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-main);
+            background-image: radial-gradient(circle at 0% 0%, #1a1c24 0%, transparent 50%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ── Navigation ───────────────────────────────────────────── */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            height: 70px;
+            background: var(--bg-nav);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-size: 28px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .layout {
+            display: flex;
+            flex: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .sidebar {
+            width: 260px;
+            padding: 30px 20px;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .sidebar-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 20px 0 10px 12px;
+        }
+
+        .sidebar-item {
+            padding: 12px 16px;
+            border-radius: var(--radius);
+            font-size: 14px;
+            color: var(--text-dim);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: var(--transition);
+        }
+
+        .sidebar-item:hover {
+            background: var(--glass);
+            color: #fff;
+            transform: translateX(5px);
+        }
+
+        .sidebar-item.active {
+            background: var(--primary-soft);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .main {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ── UI Components ────────────────────────────────────────── */
+        .panel {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .page-title {
+            font-family: var(--font-display);
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .page-sub {
+            color: var(--text-dim);
+            margin-bottom: 30px;
+            font-size: 15px;
+        }
+
+        /* Stats Grid */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .stat-value {
+            font-family: var(--font-display);
+            font-size: 32px;
+            color: #fff;
+            line-height: 1;
+        }
+
+        /* AI Coach Wrap */
+        .ai-layout {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 20px;
+        }
+
+        .chat-window {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-msgs {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .bubble {
+            max-width: 80%;
+            padding: 12px 16px;
+            font-size: 14px;
+            border-radius: 12px;
+            line-height: 1.5;
+        }
+
+        .bubble.ai {
+            background: var(--glass);
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+
+        .bubble.user {
+            background: var(--primary);
+            color: #000;
+            font-weight: 600;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+
+        .chat-input-area {
+            padding: 15px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-field {
+            flex: 1;
+            background: var(--bg-main);
+            border: 1px solid var(--border);
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 100px;
+            outline: none;
+        }
+
+        /* Generic Row List */
+        .item-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .item-row:last-child {
+            border: none;
+        }
+
+        /* Toggles */
+        .toggle {
+            width: 44px;
+            height: 22px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #334155;
+            border-radius: 20px;
+            transition: .3s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: .3s;
+        }
+
+        input:checked+.slider {
+            background: var(--primary);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(22px);
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: var(--primary);
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 100px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px var(--primary-soft);
+        }
+
+        .btn-outline {
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            background: transparent;
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-outline.active {
+            background: var(--primary);
+            color: #000;
+        }
+
+        /* ── AI Typing Indicator ──────────────────────────────────── */
+        .typing-indicator {
+            display: flex;
+            gap: 5px;
+            padding: 12px 16px;
+            align-self: flex-start;
+        }
+
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: var(--text-muted);
+            border-radius: 50%;
+            animation: typingBounce 1.4s infinite ease-in-out;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typingBounce {
+
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+                opacity: 0.4;
+            }
+
+            30% {
+                transform: translateY(-6px);
+                opacity: 1;
+            }
+        }
+
+        /* ── API Key Input ────────────────────────────────────────── */
+        .api-key-input {
+            background: var(--bg-main);
+            border: 1px solid var(--border);
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 10px;
+            outline: none;
+            width: 100%;
+            font-family: var(--font-body);
+            font-size: 13px;
+            transition: var(--transition);
+        }
+
+        .api-key-input:focus {
+            border-color: var(--primary);
+        }
+
+        .api-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-weight: 600;
+        }
+
+        .api-status.connected {
+            background: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+        }
+
+        .api-status.disconnected {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+
+        .chat-field:disabled,
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .bubble.error {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+
+        .ai-setup-banner {
+            background: linear-gradient(135deg, rgba(204, 255, 0, 0.08), rgba(204, 255, 0, 0.02));
+            border: 1px dashed var(--primary);
+            border-radius: var(--radius);
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .ai-setup-banner h4 {
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .ai-setup-banner p {
+            color: var(--text-dim);
+            font-size: 13px;
+        }
+
+        .ai-setup-banner a {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="logo" onclick="showSection('dashboard')">ATHLETIC<span>CONNECT</span></div>
+        <div class="avatar-sm"
+            style="width: 38px; height: 38px; background: var(--primary); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; cursor: pointer;"
+            onclick="showSection('profile')">MK</div>
+    </header>
+
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="sidebar-label">Main</div>
+            <div class="sidebar-item active" id="side-dashboard" onclick="showSection('dashboard')">📊 Dashboard</div>
+            <div class="sidebar-item" id="side-ai" onclick="showSection('ai')">🤖 AI Coach</div>
+            <div class="sidebar-item" id="side-challenges" onclick="showSection('challenges')">🏆 Challenges</div>
+            <div class="sidebar-item" id="side-social" onclick="showSection('social')">👥 Community</div>
+
+            <div class="sidebar-label">User</div>
+            <div class="sidebar-item" id="side-profile" onclick="showSection('profile')">👤 Profile</div>
+            <div class="sidebar-item" id="side-settings" onclick="showSection('settings')">⚙️ Settings</div>
+        </aside>
+
+        <main class="main">
+
+            <!-- DASHBOARD -->
+            <section class="section active" id="dashboard">
+                <div class="page-title">DASHBOARD</div>
+                <div class="page-sub">Welcome back, Mohan — here's your activity overview</div>
+
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-label">🔥 Calories</div>
+                        <div class="stat-value">3,240</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">🏃 Minutes</div>
+                        <div class="stat-value">318</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">⭐ Points</div>
+                        <div class="stat-value">1,870</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">🤝 Friends</div>
+                        <div class="stat-value">142</div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h3 style="margin-bottom:10px">Your Recent Activity</h3>
+                    <p style="color: var(--text-dim)">You completed a 5km run yesterday in 24:55. Keep it up!</p>
+                </div>
+            </section>
+
+            <!-- AI COACH -->
+            <section class="section" id="ai">
+                <div class="page-title">AI COACH</div>
+                <div class="page-sub">Get personalized training advice powered by Google Gemini</div>
+
+                <div id="ai-setup-banner" class="ai-setup-banner" style="display:none;">
+                    <h4>⚡ Set Up Your AI Coach</h4>
+                    <p>To activate real AI coaching, add your free Gemini API key in <a href="#"
+                            onclick="showSection('settings'); return false;">Settings → AI Configuration</a></p>
+                </div>
+
+                <div class="ai-layout">
+                    <div class="chat-window">
+                        <div class="chat-msgs" id="chat-msgs">
+                            <div class="bubble ai">👋 Hello! I'm your AI-powered fitness coach. Ask me about training
+                                plans, nutrition, recovery, injury prevention, or anything fitness-related. I have
+                                access to your profile and recent activity data!</div>
+                        </div>
+                        <div class="chat-input-area">
+                            <input type="text" class="chat-field" id="chat-field" placeholder="Ask your AI coach..."
+                                onkeydown="if(event.key==='Enter') sendMsg()">
+                            <button class="btn-primary" id="send-btn" onclick="sendMsg()">Send</button>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <h4 style="margin-bottom:15px; font-size: 13px; color: var(--primary)">COACH NOTES</h4>
+                        <ul style="font-size: 13px; color: var(--text-dim); list-style: none;">
+                            <li style="margin-bottom: 10px;">✅ Recovery looks good</li>
+                            <li style="margin-bottom: 10px;">🏃 Tempo run suggested</li>
+                            <li style="margin-bottom: 10px;">💧 Increase water intake</li>
+                        </ul>
+                        <hr style="border-color: var(--border); margin: 15px 0;">
+                        <h4 style="margin-bottom:10px; font-size: 13px; color: var(--primary)">TRY ASKING</h4>
+                        <ul style="font-size: 12px; color: var(--text-dim); list-style: none;">
+                            <li style="margin-bottom: 8px; cursor: pointer;"
+                                onclick="quickAsk('Create a 5K training plan for me')">
+                                💬 "Create a 5K training plan"
+                            </li>
+                            <li style="margin-bottom: 8px; cursor: pointer;"
+                                onclick="quickAsk('How can I improve my 5K time?')">
+                                💬 "How to improve my 5K time?"
+                            </li>
+                            <li style="cursor: pointer;" onclick="quickAsk('What should I eat before a long run?')">
+                                💬 "Pre-run nutrition tips"
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CHALLENGES -->
+            <section class="section" id="challenges">
+                <div class="page-title">ACTIVE CHALLENGES</div>
+                <div class="page-sub">Join global and local competitions</div>
+                <div class="panel">
+                    <div class="item-row">
+                        <div>
+                            <strong>30-Day Run Streak</strong><br>
+                            <small style="color: var(--text-muted)">Day 18 of 30</small>
+                        </div>
+                        <button class="btn-outline active">Joined ✓</button>
+                    </div>
+                    <div class="item-row">
+                        <div>
+                            <strong>100km Cycling Month</strong><br>
+                            <small style="color: var(--text-muted)">43km completed</small>
+                        </div>
+                        <button class="btn-outline"
+                            onclick="this.textContent='Joined ✓'; this.classList.add('active')">Join</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SOCIAL / COMMUNITY -->
+            <section class="section" id="social">
+                <div class="page-title">COMMUNITY</div>
+                <div class="page-sub">Connect with athletes in Bengaluru</div>
+                <div class="panel">
+                    <div style="border-left: 3px solid var(--primary); padding-left: 15px; margin-bottom: 20px;">
+                        <strong>Arjun R.</strong> shared a new Personal Best! <br>
+                        <small style="color: var(--text-muted)">2h ago • 5km in 23:42</small>
+                    </div>
+                    <div style="border-left: 3px solid var(--text-muted); padding-left: 15px;">
+                        <strong>Priya S.</strong> joined the 30-Day Run Streak. <br>
+                        <small style="color: var(--text-muted)">5h ago • Let's go!</small>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PROFILE -->
+            <section class="section" id="profile">
+                <div class="page-title">MY PROFILE</div>
+                <div class="panel" style="text-align:center">
+                    <div
+                        style="width: 80px; height: 80px; background: var(--primary); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 800; margin: 0 auto 15px;">
+                        MK</div>
+                    <h2>Mohan K.</h2>
+                    <p style="color: var(--primary)">Runner & Cyclist • Bengaluru, IN</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="panel">
+                        <h4 style="margin-bottom:15px; color: var(--text-dim)">Personal Bests</h4>
+                        <div class="item-row"><span>5km Run</span> <strong>24:55</strong></div>
+                        <div class="item-row"><span>10km Run</span> <strong>52:10</strong></div>
+                    </div>
+                    <div class="panel">
+                        <h4 style="margin-bottom:15px; color: var(--text-dim)">Achievements</h4>
+                        <div style="display: flex; gap: 15px; font-size: 24px;">
+                            <span>🥇</span> <span>🔥</span> <span>🚀</span> <span>💎</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SETTINGS -->
+            <section class="section" id="settings">
+                <div class="page-title">SETTINGS</div>
+                <div class="page-sub">Manage your app preferences</div>
+
+                <!-- AI Configuration Panel -->
+                <div class="panel">
+                    <h4 style="margin-bottom: 5px;">🤖 AI Configuration</h4>
+                    <p style="color: var(--text-dim); font-size: 13px; margin-bottom: 15px;">Connect your free Google
+                        Gemini API key to enable real AI coaching</p>
+                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 12px;">
+                        <input type="password" class="api-key-input" id="api-key-input"
+                            placeholder="Paste your Gemini API key here...">
+                        <button class="btn-primary" onclick="saveApiKey()" style="white-space: nowrap;">Save
+                            Key</button>
+                    </div>
+                    <div style="margin-bottom: 12px;">
+                        <label style="font-size: 12px; color: var(--text-dim); display: block; margin-bottom: 6px;">AI
+                            Model</label>
+                        <select id="model-select" class="api-key-input" style="cursor: pointer;"
+                            onchange="saveModelChoice()">
+                            <option value="gemini-2.5-flash">Gemini 2.5 Flash (Recommended - fast & free)</option>
+                            <option value="gemini-2.5-flash-lite">Gemini 2.5 Flash Lite (fastest, lightest)</option>
+                            <option value="gemini-2.5-pro">Gemini 2.5 Pro (slower, smartest)</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="api-status disconnected" id="api-status">● Not Connected</span>
+                        <button class="btn-outline" onclick="clearApiKey()"
+                            style="font-size: 12px; padding: 5px 12px;">Clear Key</button>
+                    </div>
+                    <div style="margin-top: 15px; padding: 12px; background: var(--glass); border-radius: 10px;">
+                        <p style="font-size: 12px; color: var(--text-dim); line-height: 1.6;">
+                            <strong style="color: var(--primary);">How to get your free API key:</strong><br>
+                            1. Go to <a href="https://aistudio.google.com/apikey" target="_blank"
+                                style="color: var(--primary);">aistudio.google.com/apikey</a><br>
+                            2. Sign in with your Google account<br>
+                            3. Click "Create API Key"<br>
+                            4. Copy the key and paste it above<br>
+                            <span style="color: var(--text-muted);">Your key is stored only in your browser
+                                (localStorage). It is never sent anywhere except directly to Google's API.</span>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="item-row">
+                        <div>
+                            <strong>Dark Mode</strong><br>
+                            <small style="color: var(--text-muted)">Switch between light and dark themes</small>
+                        </div>
+                        <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+                    </div>
+                    <div class="item-row">
+                        <div>
+                            <strong>Push Notifications</strong><br>
+                            <small style="color: var(--text-muted)">Get alerts for challenges and messages</small>
+                        </div>
+                        <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+                    </div>
+                    <div class="item-row">
+                        <div>
+                            <strong>Privacy Mode</strong><br>
+                            <small style="color: var(--text-muted)">Hide profile from public leaderboard</small>
+                        </div>
+                        <label class="toggle"><input type="checkbox"><span class="slider"></span></label>
+                    </div>
+                </div>
+                <button class="btn-outline" style="border-color: #ff4444; color: #ff4444;"
+                    onclick="alert('Logging out...')">Logout</button>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        /* ── Navigation Logic ─────────────────────────────────────── */
+        function showSection(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+
+            const target = document.getElementById(id);
+            if (target) target.classList.add('active');
+
+            const sideItem = document.getElementById('side-' + id);
+            if (sideItem) sideItem.classList.add('active');
+        }
+
+        /* ── Gemini AI Integration ────────────────────────────────── */
+
+        // User profile context (the AI will know about this)
+        const USER_PROFILE = {
+            name: 'Mohan K.',
+            location: 'Bengaluru, India',
+            sports: ['Running', 'Cycling'],
+            recentActivity: '5km run in 24:55',
+            personalBests: { '5km': '24:55', '10km': '52:10' },
+            weeklyStats: { calories: 3240, minutes: 318, points: 1870 },
+            currentChallenges: ['30-Day Run Streak (Day 18)', '100km Cycling Month (43km done)']
+        };
+
+        // System prompt that makes the AI act as a fitness coach
+        const SYSTEM_PROMPT = `You are "Coach", the AI fitness coach inside the AthleticConnect app.
+
+Your athlete's profile:
+- Name: ${USER_PROFILE.name}
+- Location: ${USER_PROFILE.location}
+- Sports: ${USER_PROFILE.sports.join(', ')}
+- Recent activity: ${USER_PROFILE.recentActivity}
+- Personal bests: 5km = ${USER_PROFILE.personalBests['5km']}, 10km = ${USER_PROFILE.personalBests['10km']}
+- This week: ${USER_PROFILE.weeklyStats.calories} calories burned, ${USER_PROFILE.weeklyStats.minutes} minutes active
+- Active challenges: ${USER_PROFILE.currentChallenges.join('; ')}
+
+Rules:
+- Be encouraging, knowledgeable, and concise (keep replies under 150 words unless a detailed plan is requested).
+- Reference the athlete's actual data when relevant.
+- Cover: training plans, pacing, nutrition, recovery, injury prevention, motivation.
+- Use occasional emojis for energy.
+- If the user asks something unrelated to fitness/health, gently redirect.`;
+
+        // Conversation history for multi-turn context
+        let conversationHistory = [];
+
+        // ── API Key Management ──────────────────────────────────────
+        function getApiKey() {
+            return localStorage.getItem('gemini_api_key') || '';
+        }
+
+        function saveApiKey() {
+            const input = document.getElementById('api-key-input');
+            const key = input.value.trim();
+            if (!key) {
+                alert('Please enter a valid API key.');
+                return;
+            }
+            localStorage.setItem('gemini_api_key', key);
+            updateApiStatus();
+            alert('✅ API key saved! Your AI Coach is now active.');
+        }
+
+        function clearApiKey() {
+            localStorage.removeItem('gemini_api_key');
+            document.getElementById('api-key-input').value = '';
+            updateApiStatus();
+        }
+
+        function updateApiStatus() {
+            const statusEl = document.getElementById('api-status');
+            const banner = document.getElementById('ai-setup-banner');
+            const hasKey = !!getApiKey();
+
+            statusEl.className = 'api-status ' + (hasKey ? 'connected' : 'disconnected');
+            statusEl.textContent = hasKey ? '● Connected' : '● Not Connected';
+            banner.style.display = hasKey ? 'none' : 'block';
+
+            // Pre-fill masked key
+            const input = document.getElementById('api-key-input');
+            if (hasKey && !input.value) {
+                const key = getApiKey();
+                input.value = key.slice(0, 6) + '••••••••' + key.slice(-4);
+            }
+        }
+
+        // ── Typing Indicator ────────────────────────────────────────
+        function showTyping() {
+            const box = document.getElementById('chat-msgs');
+            const typing = document.createElement('div');
+            typing.className = 'typing-indicator';
+            typing.id = 'typing-indicator';
+            typing.innerHTML = '<span></span><span></span><span></span>';
+            box.appendChild(typing);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function hideTyping() {
+            const el = document.getElementById('typing-indicator');
+            if (el) el.remove();
+        }
+
+        // ── Quick Ask (clickable suggestions) ───────────────────────
+        function quickAsk(text) {
+            document.getElementById('chat-field').value = text;
+            sendMsg();
+        }
+
+        // ── Send Message & Call Gemini API ───────────────────────────
+        async function sendMsg() {
+            const input = document.getElementById('chat-field');
+            const box = document.getElementById('chat-msgs');
+            const sendBtn = document.getElementById('send-btn');
+            const userText = input.value.trim();
+            if (!userText) return;
+
+            // Check for API key
+            const apiKey = getApiKey();
+            if (!apiKey) {
+                const uDiv = document.createElement('div');
+                uDiv.className = 'bubble user';
+                uDiv.textContent = userText;
+                box.appendChild(uDiv);
+                input.value = '';
+
+                const errDiv = document.createElement('div');
+                errDiv.className = 'bubble error';
+                errDiv.textContent = '⚠️ No API key configured. Please go to Settings → AI Configuration to add your free Gemini API key.';
+                box.appendChild(errDiv);
+                box.scrollTop = box.scrollHeight;
+                return;
+            }
+
+            // Show user message
+            const uDiv = document.createElement('div');
+            uDiv.className = 'bubble user';
+            uDiv.textContent = userText;
+            box.appendChild(uDiv);
+            input.value = '';
+            box.scrollTop = box.scrollHeight;
+
+            // Disable input while waiting
+            input.disabled = true;
+            sendBtn.disabled = true;
+            showTyping();
+
+            // Add to conversation history
+            conversationHistory.push({ role: 'user', parts: [{ text: userText }] });
+
+            try {
+                // Build the request body with conversation history
+                const requestBody = {
+                    system_instruction: {
+                        parts: [{ text: SYSTEM_PROMPT }]
+                    },
+                    contents: conversationHistory
+                };
+
+                // Try the selected model, then fall back to others if quota exceeded
+                const selectedModel = getSelectedModel();
+                const fallbackModels = ['gemini-2.5-flash', 'gemini-2.5-flash-lite', 'gemini-2.5-pro']
+                    .filter(m => m !== selectedModel);
+                const modelsToTry = [selectedModel, ...fallbackModels];
+
+                let response = null;
+                let lastError = null;
+
+                for (const model of modelsToTry) {
+                    response = await fetch(
+                        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+                        {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(requestBody)
+                        }
+                    );
+
+                    if (response.ok) break;
+
+                    // Check if it's a quota error — if so, try next model
+                    const errData = await response.json().catch(() => ({}));
+                    const errMsg = errData?.error?.message || '';
+                    if (errMsg.includes('quota') || errMsg.includes('Quota') || response.status === 429) {
+                        console.warn(`Quota exceeded for ${model}, trying next...`);
+                        lastError = errMsg;
+                        continue;
+                    }
+                    // Non-quota error — don't retry
+                    throw new Error(errMsg || `API returned status ${response.status}`);
+                }
+
+                hideTyping();
+
+                if (!response.ok) {
+                    throw new Error(lastError || `All models exceeded quota. Please wait a minute and try again, or check your API key at aistudio.google.com/apikey`);
+                }
+
+                const data = await response.json();
+                const aiText = data?.candidates?.[0]?.content?.parts?.[0]?.text
+                    || 'Sorry, I couldn\'t generate a response. Please try again.';
+
+                // Add AI response to conversation history
+                conversationHistory.push({ role: 'model', parts: [{ text: aiText }] });
+
+                // Display AI response
+                const aDiv = document.createElement('div');
+                aDiv.className = 'bubble ai';
+                aDiv.innerHTML = formatAIResponse(aiText);
+                box.appendChild(aDiv);
+
+            } catch (error) {
+                hideTyping();
+                console.error('Gemini API Error:', error);
+
+                const errDiv = document.createElement('div');
+                errDiv.className = 'bubble error';
+                errDiv.textContent = `❌ Error: ${error.message}`;
+                box.appendChild(errDiv);
+
+                // Remove the failed user message from history
+                conversationHistory.pop();
+            }
+
+            // Re-enable input
+            input.disabled = false;
+            sendBtn.disabled = false;
+            input.focus();
+            box.scrollTop = box.scrollHeight;
+        }
+
+        // ── Model Selection ──────────────────────────────────────────
+        function getSelectedModel() {
+            return localStorage.getItem('gemini_model') || 'gemini-2.5-flash';
+        }
+
+        function saveModelChoice() {
+            const select = document.getElementById('model-select');
+            localStorage.setItem('gemini_model', select.value);
+        }
+
+        // ── Format AI response (basic markdown → HTML) ──────────────
+        function formatAIResponse(text) {
+            return text
+                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')   // bold
+                .replace(/\*(.+?)\*/g, '<em>$1</em>')               // italic
+                .replace(/\n/g, '<br>');                             // newlines
+        }
+
+        // ── Initialize on page load ─────────────────────────────────
+        window.addEventListener('DOMContentLoaded', () => {
+            updateApiStatus();
+            // Restore saved model selection
+            const savedModel = getSelectedModel();
+            const select = document.getElementById('model-select');
+            if (select) select.value = savedModel;
+        });
+    </script>
+
+</body>
+
+</html>
