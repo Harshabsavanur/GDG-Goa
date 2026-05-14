@@ -26,7 +26,7 @@ CORS(app)
 JWT_SECRET = os.getenv('JWT_SECRET', 'athleticconnect-default-secret')
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', '')
 GEMINI_MODEL = os.getenv('GEMINI_MODEL', 'gemini-2.5-flash')
-
+#harsha bsgit
 
 # ══════════════════════════════════════════════════════════════
 #  AUTH MIDDLEWARE
