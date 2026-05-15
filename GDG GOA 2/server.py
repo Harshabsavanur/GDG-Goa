@@ -29,7 +29,7 @@ GEMINI_MODEL = os.getenv('GEMINI_MODEL', 'gemini-2.5-flash')
 
 
 # ══════════════════════════════════════════════════════════════
-#  AUTH MIDDLEWARE
+#  AUTH MIDDLEWARE harsha
 # ══════════════════════════════════════════════════════════════
 
 def auth_required(f):
