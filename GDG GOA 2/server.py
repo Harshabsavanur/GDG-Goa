@@ -17,7 +17,7 @@ from dotenv import load_dotenv
 
 from database import get_db, init_db
 
-# ── Load Environment ─────────────────────────────────────────
+# ── Loading Environment ─────────────────────────────────────────
 load_dotenv()
 
 app = Flask(__name__, static_folder='public', static_url_path='')
